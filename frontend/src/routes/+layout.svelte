@@ -62,6 +62,7 @@
     position: absolute;
     right: 0;
     bottom: 0;
+    z-index: 0;
   }
 
   .logo-and-text {

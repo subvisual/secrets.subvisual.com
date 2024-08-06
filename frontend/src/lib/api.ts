@@ -1,5 +1,4 @@
 const API_URL = import.meta.env.VITE_API_URL;
-
 export type fetchType = (info: RequestInfo, init?: RequestInit) => Promise<Response>;
 
 export async function createSecret(

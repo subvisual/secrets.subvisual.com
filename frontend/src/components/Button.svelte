@@ -18,7 +18,6 @@
     border-radius: 50px;
     color: white;
     border: 0;
-    cursor: pointer;
     padding: 16px;
     display: inline-block;
   }
@@ -26,9 +25,7 @@
     background-color: #FFFFFF;
     border-radius: 50px;
     color: #0263f4;
-    border: 0;
     border: 1px solid #0263F4;
-    cursor: pointer;
     padding: 16px;
     display: inline-block;
   }
@@ -36,6 +33,7 @@
     width: 180px;
   }
   .lg {
+    cursor: pointer;
     display: inline-block;
     flex: 1 1 200px;
     max-width: 250px;

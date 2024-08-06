@@ -21,8 +21,20 @@ const deriveKey = (passwordKey: CryptoKey, salt: ArrayBuffer, keyUsage: KeyUsage
     keyUsage
   );
 
-const bufferToBase64 = (buff: ArrayBuffer) => btoa(String.fromCharCode.apply(null, buff));
-const base64ToBuffer = (b64: string) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(null));
+  const bufferToBase64 = (buff: ArrayBuffer): string => {
+    const bytes = new Uint8Array(buff);
+    const binary = String.fromCharCode.apply(null, Array.from(bytes));
+    return btoa(binary);
+};
+const base64ToBuffer = (b64: string): Uint8Array => {
+  const binaryString = atob(b64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+};
 
 export function generateRandomChars(number: number): string {
   return Array(number)
@@ -93,4 +105,21 @@ export async function decryptData(encryptedText: string, passphrase: string): Pr
     console.log(`Error - ${e}`);
     return '';
   }
+}
+
+export async function convertFileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+          if (reader.result) {
+              resolve(reader.result.toString());
+          } else {
+              reject(new Error("File could not be read"));
+          }
+      };
+      reader.onerror = () => {
+          reject(new Error("File reading has failed"));
+      };
+      reader.readAsDataURL(file);
+  });
 }
