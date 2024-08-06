@@ -18,20 +18,37 @@
     border-radius: 50px;
     color: white;
     border: 0;
+    cursor: pointer;
+    padding: 16px;
+    display: inline-block;
+  }
+  .sec {
+    background-color: #FFFFFF;
+    border-radius: 50px;
+    color: #0263f4;
+    border: 0;
+    border: 1px solid #0263F4;
+    cursor: pointer;
+    padding: 16px;
+    display: inline-block;
   }
   .sm {
     width: 180px;
   }
   .lg {
-    width: 322px;
-    height: 60px;
+    display: inline-block;
+    flex: 1 1 200px;
+    max-width: 250px;
+    height: 55px;
     font-family: Inter;
     font-size: 16px;
     font-weight: 500;
     line-height: 20px;
     text-align: center;
     margin: 10px;
-    padding: 0;
+    padding: 16px;
+
+
   }
   .dropbtn {
     background-color: #FFFFFF;
