@@ -55,7 +55,7 @@
     background-color: #f0f7fe;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   .IconLayout {
@@ -95,7 +95,7 @@
     align-items: center;
     width: auto;
     height: 48px;
-    font-family: Inter;
+    font-family: 'Inter', sans-serif;
     font-size: 18px;
     text-align: center;
     margin-right: auto;

@@ -2,6 +2,7 @@
     // @ts-nocheck
   
     import Button from "../components/Button.svelte";
+
   
     let menuOpen = false;
     let inputValue = "";
@@ -28,7 +29,7 @@
   
   <style>
     p {
-      font-family: Inter;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 400;
       line-height: 28px;
@@ -40,7 +41,7 @@
       border: 1px solid #f8fbfd;
       border-radius: 20px 20px 0 0;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16);
-      font-family: Inter;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       color: #729cc5;
       line-height: 24px;

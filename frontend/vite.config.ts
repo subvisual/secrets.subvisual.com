@@ -4,7 +4,7 @@ import { defineConfig, type UserConfig } from 'vite';
 export default defineConfig(async ({ mode }) => {
   function buildApiUrl() {
     if (mode === 'development') {
-      return 'http://localhost:5173';
+      return 'http://localhost:4000';
     }
 
     const prNumber = process.env['REVIEW_ID'];

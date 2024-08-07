@@ -1,16 +1,20 @@
-<script>
+<script lang="ts">
   // @ts-nocheck
 
-  let buttonProps = {
-    class: [$$restProps.class],
-  };
-
+  export let disabled = false;
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-<button on:click on:mouseover on:mouseenter on:mouseleave {...buttonProps}>
+<button
+  on:click
+  on:mouseover
+  on:mouseenter
+  on:mouseleave
+  {...$$restProps}  class:disabled={false || disabled}
+>
   <slot />
 </button>
+
 
 <style>
   .primary {
@@ -22,10 +26,10 @@
     display: inline-block;
   }
   .sec {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border-radius: 50px;
     color: #0263f4;
-    border: 1px solid #0263F4;
+    border: 1px solid #0263f4;
     padding: 16px;
     display: inline-block;
   }
@@ -38,24 +42,31 @@
     flex: 1 1 200px;
     max-width: 250px;
     height: 55px;
-    font-family: Inter;
+    font-family: "Inter", sans-serif;
     font-size: 16px;
     font-weight: 500;
     line-height: 20px;
     text-align: center;
     margin: 10px;
     padding: 16px;
-
-
   }
   .dropbtn {
-    background-color: #FFFFFF;
-    color: #0263F4;
+    background-color: #ffffff;
+    color: #0263f4;
     padding: 16px;
     font-size: 16px;
     border: none;
     cursor: pointer;
-    border: 1px solid #0263F4
+    border: 1px solid #0263f4;
+  }
+
+  .disabled {
+    cursor: not-allowed;
+    border: 1px solid #bdbdbd;
+    opacity: 0.6;
+    background-color: #0263F43D;
+    color: white;
+
 
   }
 </style>
