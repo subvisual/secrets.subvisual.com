@@ -1,12 +1,15 @@
 <script>
+  import "../app.css";
   import IconLayout from "../components/IconLayout.svelte";
   import IconLogo from "../components/IconLogo.svelte";
+  import { getStats } from "../lib/api";
+  
 </script>
 
 <div
-  class="h-full w-full overflow-hidden bg-smoked-white font-body tracking-tight text-dark-grey antialiased outline-dark-grey"
+  class="h-full w-full overflow-hidden bg-[#f0f7fe] font-inter tracking-tight text-[#333333] antialiased outline-[#333333]"
 >
-  <div class="IconLayout">
+  <div class="absolute right-0 bottom-0 z-0">
     <IconLayout />
   </div>
 
@@ -15,8 +18,8 @@
       class="mx-auto flex min-h-screen w-full flex-col justify-between gap-6 py-6 sm:w-5/6 md:gap-0 md:pt-8"
     >
       <main>
-        <div class="logo-and-text">
-          <div class="IconLogo">
+        <div class="flex flex-col items-center justify-center p-5 mt-[55px]">
+          <div class="flex flex-col items-center justify-center">
             <IconLogo />
           </div>
         </div>
@@ -24,16 +27,22 @@
       </main>
 
       <footer
-        class="mx-auto flex w-7/12 flex-col items-center justify-between gap-6 justify-self-end text-sm tracking-tight md:flex-row"
+        class="mx-auto flex w-7/12 flex-col items-center justify-between gap-6 md:flex-row text-sm tracking-tight"
       >
-        <div class="source">
-          <div class="secrets">
-            <div class="rectangle">
-              <p class="number">88</p>
+        <div
+          class="absolute left-[121px] top-[80vh] opacity-100 w-[524px] h-[48px]"
+        >
+          <div
+            class="flex items-center text-center text-[18px] font-inter mr-auto"
+          >
+            <div
+              class="flex items-center justify-center bg-[#cfe7ff] rounded-[32px] w-[88px] h-[48px]"
+            >
+              <p class="font-bold font-inter text-[#045cfc]">88</p>
             </div>
-            <p class="secretsText">Secrets Created</p>
+            <p class="font-normal font-inter text-[#729cc5] ml-[10px]">Secrets Created</p>
           </div>
-          <p class="footer-text">
+          <p class="absolute left-[121px] mt-[20px] text-left">
             <a
               href="https://github.com/finiam/secrets.finiam.com"
               target="_blank"
@@ -49,82 +58,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  :global(body) {
-    background-color: #f0f7fe;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .IconLayout {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-  }
-
-  .logo-and-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    top: 55px;
-  }
-
-  footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .source {
-    width: 524px;
-    height: 48px;
-    position: absolute;
-    left: 121px;
-    top: 80vh;
-    opacity: 1;
-  }
-
-  .secrets {
-    display: flex;
-    align-items: center;
-    width: auto;
-    height: 48px;
-    font-family: 'Inter', sans-serif;
-    font-size: 18px;
-    text-align: center;
-    margin-right: auto;
-  }
-
-  .rectangle {
-    width: 88px;
-    height: 48px;
-    background-color: #cfe7ff;
-    border-radius: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .number {
-    font-weight: 700;
-    color: #045cfc;
-  }
-
-  .secretsText {
-    font-weight: 400;
-    color: #729cc5;
-    margin-left: 10px;
-  }
-
-  .footer-text {
-    left: 121px;
-    margin-top: 20px;
-    text-align: left;
-  }
-</style>

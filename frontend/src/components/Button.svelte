@@ -10,63 +10,31 @@
   on:mouseover
   on:mouseenter
   on:mouseleave
-  {...$$restProps}  class:disabled={false || disabled}
+  {...$$restProps}
+  class={`inline-block rounded-full px-4 py-4 text-sm font-medium ${
+    disabled ? 'cursor-not-allowed border-gray-400 bg-[#0263F43D] text-white' : 'border-0'
+  } ${$$restProps.class}`}
 >
   <slot />
 </button>
 
-
-<style>
-  .primary {
-    background-color: #0263f4;
-    border-radius: 50px;
-    color: white;
-    border: 0;
-    padding: 16px;
-    display: inline-block;
+<style lang="postcss">
+  :global(button.primary) {
+    @apply bg-[#0263f4] text-white;
   }
-  .sec {
-    background-color: #ffffff;
-    border-radius: 50px;
-    color: #0263f4;
-    border: 1px solid #0263f4;
-    padding: 16px;
-    display: inline-block;
+  :global(button.sec) {
+    @apply text-[#0263f4] border border-[#0263f4];
   }
-  .sm {
-    width: 180px;
+  :global(button.sm) {
+    @apply w-[180px];
   }
-  .lg {
-    cursor: pointer;
-    display: inline-block;
-    flex: 1 1 200px;
-    max-width: 250px;
-    height: 55px;
-    font-family: "Inter", sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 20px;
-    text-align: center;
-    margin: 10px;
-    padding: 16px;
+  :global(button.lg) {
+    @apply cursor-pointer flex-1 max-w-[250px] h-[55px] font-sans text-center my-[10px] py-4 text-[16px] font-medium leading-[20px];
   }
-  .dropbtn {
-    background-color: #ffffff;
-    color: #0263f4;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    border: 1px solid #0263f4;
+  :global(button.dropbtn) {
+    @apply bg-white text-[#0263f4] text-[16px] border border-[#0263f4] cursor-pointer;
   }
-
-  .disabled {
-    cursor: not-allowed;
-    border: 1px solid #bdbdbd;
-    opacity: 0.6;
-    background-color: #0263F43D;
-    color: white;
-
-
+  :global(button.disabled) {
+    @apply cursor-not-allowed border border-gray-400 opacity-60 bg-[#0263F43D] text-white;
   }
 </style>
