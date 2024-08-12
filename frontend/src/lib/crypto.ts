@@ -104,9 +104,9 @@ export async function decryptData(
 ): Promise<string> {
   try {
     const encryptedData = base64ToBuffer(encryptedText);
-    const salt = encryptedData.slice(0, 16); // First 16 bytes are the salt
-    const iv = encryptedData.slice(16, 28); // Next 12 bytes are the IV
-    const encryptedContent = encryptedData.slice(28); // Remaining bytes are the encrypted content
+    const salt = encryptedData.slice(0, 16); 
+    const iv = encryptedData.slice(16, 28); 
+    const encryptedContent = encryptedData.slice(28); 
 
     const passwordKey = await getPasswordKey(passphrase);
     const aesKey = await deriveKey(passwordKey, salt, ["decrypt"]);

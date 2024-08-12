@@ -35,7 +35,7 @@
   let encryptionKey: string;
   let sharingUrl: string;
   let roomId: string;
-  let copyLabel = 'Copy link';
+  let copyLabel = "Copy link";
 
   function handleFileInput(event) {
     const files = event.target.files;
@@ -82,7 +82,7 @@
       submitting = false;
     } catch (error) {
       console.error("Error:", error);
-      // goto("/error");
+      goto("/error");
       submitting = false;
     }
   }
@@ -90,36 +90,40 @@
   function newSecret() {
     goto("/");
     submitting = false;
-    sharingUrl= '';
+    sharingUrl = "";
     images = [];
     imageBase64Strings = [];
-    secretText = '';
+    secretText = "";
   }
 
   function copyToClipboard() {
     navigator.clipboard.writeText(sharingUrl);
-    copyLabel = 'Copied!';
+    copyLabel = "Copied!";
   }
 </script>
 
 <!-- svelte-ignore empty-block -->
 {#if !submitting && !sharingUrl}
   <div class="page-container relative z-2">
-    <p align="center" class="text-[20px] font-inter m-[10px]">
+    <p align="center" class="text-[20px] font-inter m-[25px]">
       Share information securely and ephemerally. <br />The generated link will
       only work once, then it will disappear forever.
     </p>
-    <p align="center" class="text-[20px] font-inter m-[10px] underline text-[#0263F4]">How it works?</p>
-    <div align="center" class="container">
-      <div>
-        <textarea
-          class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none shadow-md text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none"
-          bind:value={secretText}
-          placeholder="Write your information here..."
-        />
-      </div>
+    <p
+      align="center"
+      class="text-[20px] font-inter m-[25px] underline text-[#0263F4]"
+    >
+      How it works?
+    </p>
+    <div align="center" class="flex flex-col items-center w-full">
+      <textarea
+        class="w-full max-w-[980px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none shadow-md text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border"
+        bind:value={secretText}
+        placeholder="Write your information here..."
+      />
+
       <div
-        class="flex flex-wrap justify-center items-center w-full max-w-[880px] rounded-b-[20px] shadow-md p-[15px] bg-white"
+        class="flex flex-wrap justify-center items-center w-full max-w-[980px] rounded-b-[20px] shadow-md p-[15px] bg-white box-border"
       >
         <select
           class="flex-1 min-w-[200px] max-w-[250px] h-[55px] m-[10px] font-inter text-[16px] font-medium leading-[20px] text-center border border-[#0263f4] bg-white text-[#0263f4] p-[16px] rounded-full cursor-pointer"
@@ -173,12 +177,22 @@
         Your secret is ready. Keep in mind the link can only be revealed once,
         then it is utterly destroyed.
       </p>
-      <div class="inline-block break-words w-full max-w-[880px] h-[112px] rounded-[12px] bg-white flex justify-center items-center text-center">
-        <a href={sharingUrl} class="inline-block break-words w-[880px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto">{sharingUrl}</a>
+      <div
+        class="inline-block break-words w-full max-w-[880px] h-[112px] rounded-[12px] bg-white flex justify-center items-center text-center"
+      >
+        <a
+          href={sharingUrl}
+          class="inline-block break-words w-[880px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto"
+          >{sharingUrl}</a
+        >
       </div>
-      <div class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]">
+      <div
+        class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
+      >
         <Button class="lg sec" on:click={() => newSecret()}>Reset</Button>
-        <Button class="lg primary" on:click={() => copyToClipboard()}>{copyLabel}</Button>
+        <Button class="lg primary" on:click={() => copyToClipboard()}
+          >{copyLabel}</Button
+        >
       </div>
     </div>
   </div>
@@ -193,7 +207,11 @@
       <div
         class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
       >
-        <p class="font-inter text-[20px] font-semibold leading-[24px] text-[#045cfc] mb-[10px]">Encrypting your secret...</p>
+        <p
+          class="font-inter text-[20px] font-semibold leading-[24px] text-[#045cfc] mb-[10px]"
+        >
+          Encrypting your secret...
+        </p>
         <div align="left">
           <progress
             class="w-full max-w-[880px] h-[16px] rounded-full"
@@ -212,7 +230,7 @@
   }
 
   progress {
-    appearance: none; 
+    appearance: none;
   }
 
   progress::-webkit-progress-bar {
@@ -229,5 +247,4 @@
     background: linear-gradient(90deg, #2c8dff 0%, #0263f4 100%);
     border-radius: 24px;
   }
-
 </style>

@@ -30,12 +30,11 @@
       const parsedSecret = JSON.parse(decryptedSecret);
 
       secretText = parsedSecret.text;
-      console.log("Images:", parsedSecret.images);
       images = parsedSecret.images;
       revealed = true;
     } catch (error) {
       console.error("Error:", error);
-      // goto("/error");
+      goto("/error");
     }
   }
 
