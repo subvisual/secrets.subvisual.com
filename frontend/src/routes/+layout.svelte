@@ -1,9 +1,22 @@
-<script>
+<script lang="ts">
   import "../app.css";
   import IconLayout from "../components/IconLayout.svelte";
   import IconLogo from "../components/IconLogo.svelte";
   import { getStats } from "../lib/api";
+  import { onMount } from 'svelte';
   
+  let secretsCounter: string = '';
+
+  onMount(async () => {
+    try {
+      const stats = await getStats();
+      secretsCounter = stats.secretsCounter;
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  });
+
+
 </script>
 
 <div
@@ -38,18 +51,18 @@
             <div
               class="flex items-center justify-center bg-[#cfe7ff] rounded-[32px] w-[88px] h-[48px]"
             >
-              <p class="font-bold font-inter text-[#045cfc]">88</p>
+              <p class="font-bold font-inter text-[#045cfc]">{secretsCounter}</p>
             </div>
-            <p class="font-normal font-inter text-[#729cc5] ml-[10px]">Secrets Created</p>
+            <p class="text-[20px] font-normal font-inter text-[#729cc5] ml-[10px]">Secrets Created</p>
           </div>
-          <p class="absolute left-[121px] mt-[20px] text-left">
-            <a
+          <p class="absolute mr-auto mt-[20px] text-left text-[20px]">
+            <a 
               href="https://github.com/finiam/secrets.finiam.com"
               target="_blank"
-              rel="noopener"><b>Open source</b></a
+              rel="noopener"><b class='underline'>Open source</b></a
             >
             project powered by
-            <a href="https://subvisual.com/" target="_blank" rel="noreferrer"
+            <a href="https://subvisual.com/" target="_blank" rel="noreferrer" class="font-bold font-inter text-[#045cfc] underline"
               >Subvisual</a
             >
           </p>

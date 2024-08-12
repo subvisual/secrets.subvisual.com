@@ -32,15 +32,17 @@ const bufferToBase64 = (buff: ArrayBuffer): string => {
   const binary = String.fromCharCode.apply(null, Array.from(bytes));
   return btoa(binary);
 };
-const base64ToBuffer = (b64: string): Uint8Array => {
-  const binaryString = atob(b64);
+
+function base64ToBuffer(base64: string): Uint8Array {
+  const binaryString = window.atob(base64);
   const len = binaryString.length;
   const bytes = new Uint8Array(len);
   for (let i = 0; i < len; i++) {
     bytes[i] = binaryString.charCodeAt(i);
   }
   return bytes;
-};
+}
+
 
 export function generateRandomChars(number: number): string {
   return Array(number)
@@ -95,15 +97,17 @@ export async function encryptData(
   }
 }
 
+
 export async function decryptData(
   encryptedText: string,
   passphrase: string
 ): Promise<string> {
   try {
-    const encryptedDataBuff = base64ToBuffer(encryptedText);
-    const salt = encryptedDataBuff.slice(0, 16);
-    const iv = encryptedDataBuff.slice(16, 16 + 12);
-    const data = encryptedDataBuff.slice(16 + 12);
+    const encryptedData = base64ToBuffer(encryptedText);
+    const salt = encryptedData.slice(0, 16); // First 16 bytes are the salt
+    const iv = encryptedData.slice(16, 28); // Next 12 bytes are the IV
+    const encryptedContent = encryptedData.slice(28); // Remaining bytes are the encrypted content
+
     const passwordKey = await getPasswordKey(passphrase);
     const aesKey = await deriveKey(passwordKey, salt, ["decrypt"]);
     const decryptedContent = await window.crypto.subtle.decrypt(
@@ -112,26 +116,25 @@ export async function decryptData(
         iv: iv,
       },
       aesKey,
-      data
+      encryptedContent
     );
 
-    return new TextDecoder().decode(decryptedContent);
+    const decodedText = new TextDecoder().decode(decryptedContent);
+    return decodedText;
   } catch (e) {
     console.log(`Error - ${e}`);
     return "";
   }
 }
 
+
 export async function convertFileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    // Check if the file is an instance of File
     if (!(file instanceof File)) {
       reject(new TypeError("Expected a File object"));
       return;
     }
-
     const reader = new FileReader();
-
     reader.onloadend = () => {
       if (reader.result) {
         resolve(reader.result.toString());
@@ -139,7 +142,6 @@ export async function convertFileToBase64(file: File): Promise<string> {
         reject(new Error("File could not be read"));
       }
     };
-
     reader.onerror = () => {
       reject(new Error("File reading has failed"));
     };
@@ -147,3 +149,4 @@ export async function convertFileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
+
