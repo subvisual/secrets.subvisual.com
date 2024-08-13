@@ -2,6 +2,7 @@
   // @ts-nocheck
   import type { PageData } from "./$types";
   import Button from "../../components/Button.svelte";
+  import Modal from "../components/Modal.svelte";
   import {
     encryptData,
     generatePassphrase,
@@ -21,6 +22,7 @@
   let copyLabel = "Copy Information";
   let secretText: string;
   let images = [];
+  let showModal = false;
 
   async function revealSecret() {
     const secret = await getRoomSecret(room);
@@ -40,6 +42,12 @@
 
   function newSecret() {
     goto("/");
+    submitting = false;
+    sharingUrl = "";
+    images = [];
+    imageBase64Strings = [];
+    secretText = "";
+    copyLabel = "Copy link!";
   }
 
   function copyToClipboard() {
@@ -89,7 +97,15 @@
         This secret can only be revealed once, and then it will be immediately
         destroyed.
       </p>
-      <p>How it works?</p>
+      <button
+        on:click={() => (showModal = true)}
+        align="center"
+        class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
+      >
+        How it works?
+      </button>
+
+      <Modal bind:showModal></Modal>
       <div
         class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
       >

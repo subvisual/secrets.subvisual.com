@@ -1,6 +1,7 @@
 <script lang="ts">
   // @ts-nocheck
   import Button from "../components/Button.svelte";
+  import Modal from "../components/Modal.svelte";
   import {
     encryptData,
     generatePassphrase,
@@ -12,21 +13,23 @@
   import { cubicOut } from "svelte/easing";
   import { goto } from "$app/navigation";
 
+  let showModal = false;
+
   const progress = tweened(0, {
     duration: 400,
     easing: cubicOut,
   });
 
   const duration = [
-    { value: 900, label: `Secret's Lifetime` },
+    { value: 800, label: `Secret's Lifetime` },
     { value: 21600, label: `6 hours` },
     { value: 3600, label: `1 hour` },
     { value: 1800, label: `30 min` },
     { value: 900, label: `15 min` },
   ];
-  let expiry = 900;
+  let expiry = 800;
   let submitting = false;
-  let secretText = "";
+  let secretText: string;
   let fileinput;
   let images = [];
   let imageBase64Strings = [];
@@ -94,6 +97,7 @@
     images = [];
     imageBase64Strings = [];
     secretText = "";
+    copyLabel = "Copy link!";
   }
 
   function copyToClipboard() {
@@ -105,16 +109,22 @@
 <!-- svelte-ignore empty-block -->
 {#if !submitting && !sharingUrl}
   <div class="page-container relative z-2">
-    <p align="center" class="text-[20px] font-inter m-[25px]">
-      Share information securely and ephemerally. <br />The generated link will
-      only work once, then it will disappear forever.
-    </p>
-    <p
-      align="center"
-      class="text-[20px] font-inter m-[25px] underline text-[#0263F4]"
-    >
-      How it works?
-    </p>
+    <div align="center">
+      <p align="center" class="text-[20px] font-inter m-[25px]">
+        Share information securely and ephemerally. <br />The generated link
+        will only work once, then it will disappear forever.
+      </p>
+
+      <button
+        on:click={() => (showModal = true)}
+        align="center"
+        class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
+      >
+        How it works?
+      </button>
+
+      <Modal bind:showModal></Modal>
+    </div>
     <div align="center" class="flex flex-col items-center w-full">
       <textarea
         class="w-full max-w-[980px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none shadow-md text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border"
@@ -149,7 +159,9 @@
           }}>Import Image</Button
         >
 
-        <Button on:click={handleClick} disabled={!secretText} class="lg primary"
+        <Button
+          on:click={handleClick}
+          class={`lg primary ${!secretText ? "lg primary disabled" : "lg primary"} `}
           >Create a secret link</Button
         >
       </div>
@@ -203,7 +215,15 @@
         Share information securely and ephemerally. <br />The generated link
         will only work once, then it will disappear forever.
       </p>
-      <p>How it works?</p>
+      <button
+        on:click={() => (showModal = true)}
+        align="center"
+        class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
+      >
+        How it works?
+      </button>
+
+      <Modal bind:showModal></Modal>
       <div
         class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
       >
@@ -226,7 +246,7 @@
 
 <style lang="postcss">
   p {
-    @apply text-base font-normal leading-7 text-center;
+    @apply text-base font-inter leading-7 text-center;
   }
 
   progress {
