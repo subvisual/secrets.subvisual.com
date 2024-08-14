@@ -185,7 +185,7 @@
 {:else if !submitting && sharingUrl}
   <div class="page-container relative z-2">
     <div align="center">
-      <p>
+      <p class="text-[20px] font-inter m-[25px]">
         Your secret is ready. Keep in mind the link can only be revealed once,
         then it is utterly destroyed.
       </p>
@@ -194,7 +194,7 @@
       >
         <a
           href={sharingUrl}
-          class="inline-block break-words w-[880px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto"
+          class="inline-block break-words w-[880px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto underline text-[#0263F4]"
           >{sharingUrl}</a
         >
       </div>

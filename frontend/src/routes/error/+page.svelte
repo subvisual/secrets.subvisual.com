@@ -14,7 +14,7 @@
 
 <div class="page-container relative z-2">
   <div align="center">
-    <p>
+    <p class="text-[18px] font-inter m-[25px]">
       This secret was either already revealed or never existed in the first
       place.
     </p>

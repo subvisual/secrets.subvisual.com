@@ -2,7 +2,7 @@
   // @ts-nocheck
   import type { PageData } from "./$types";
   import Button from "../../components/Button.svelte";
-  import Modal from "../components/Modal.svelte";
+  import Modal from "../../components/Modal.svelte";
   import {
     encryptData,
     generatePassphrase,
@@ -25,9 +25,9 @@
   let showModal = false;
 
   async function revealSecret() {
-    const secret = await getRoomSecret(room);
-    const encryptionKey = location.hash.substring(1);
     try {
+      const secret = await getRoomSecret(room);
+      const encryptionKey = location.hash.substring(1);
       let decryptedSecret = await decryptData(secret, encryptionKey);
       const parsedSecret = JSON.parse(decryptedSecret);
 
@@ -35,7 +35,6 @@
       images = parsedSecret.images;
       revealed = true;
     } catch (error) {
-      console.error("Error:", error);
       goto("/error");
     }
   }
@@ -60,11 +59,14 @@
   <!-- svelte-ignore empty-block -->
   {#if revealed}
     <div align="center">
+      <p class="text-[18px] font-inter m-[25px]">
+        Secret is revealed and is now permanently deleted from the system.
+      </p>
       <div
         class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
       >
         <p
-          class="font-inter text-[20px] font-semibold leading-[24px] text-[#045cfc] mb-[10px]"
+          class="font-inter text-[20px] font-semibold leading-[24px] text-[#729cc5] mb-[10px]"
         >
           {secretText}
         </p>
@@ -93,7 +95,7 @@
     </div>
   {:else}
     <div align="center">
-      <p>
+      <p class="text-[18px] font-inter m-[25px]">
         This secret can only be revealed once, and then it will be immediately
         destroyed.
       </p>
