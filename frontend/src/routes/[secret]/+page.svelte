@@ -3,6 +3,7 @@
   import type { PageData } from "./$types";
   import Button from "../../components/Button.svelte";
   import Modal from "../../components/Modal.svelte";
+  import ImageModal from "../../components/ImageModal.svelte"; 
   import {
     encryptData,
     generatePassphrase,
@@ -23,6 +24,8 @@
   let secretText: string;
   let images = [];
   let showModal = false;
+  let selectedImage = ""; 
+  let imageModalVisible = false; 
 
   async function revealSecret() {
     try {
@@ -53,10 +56,14 @@
     copyLabel = "Copied!";
     navigator.clipboard.writeText(secretText);
   }
+
+  function openImageModal(image) {
+    selectedImage = image;
+    imageModalVisible = true;
+  }
 </script>
 
 <div class="page-container relative z-2">
-  <!-- svelte-ignore empty-block -->
   {#if revealed}
     <div align="center">
       <p class="text-[18px] font-inter m-[25px]">
@@ -66,7 +73,7 @@
         class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
       >
         <p
-          class="font-inter text-[20px] font-semibold leading-[24px] text-[#729cc5] mb-[10px]"
+          class="font-inter text-[16px] font-semibold leading-[24px] text-[#729cc5] mb-[10px] text-start"
         >
           {secretText}
         </p>
@@ -84,10 +91,13 @@
       <div class="flex flex-wrap justify-center items-center mt-[10px]">
         {#each images as image, index}
           <div class="relative m-[5px]">
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
             <img
-              class="max-w-[100px] max-h-[100px] object-cover"
+              class="max-w-[200px] max-h-[100px] object-cover cursor-pointer"
               alt="Uploaded"
               src={image}
+              on:click={() => openImageModal(image)} 
             />
           </div>
         {/each}
@@ -117,4 +127,6 @@
       </div>
     </div>
   {/if}
+
+  <ImageModal bind:showModal={imageModalVisible} imageUrl={selectedImage} />
 </div>

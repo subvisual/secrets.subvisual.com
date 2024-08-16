@@ -23,12 +23,12 @@
     >
     <p class="text-[20px] font-inter font-bold mb-[15px] text-[#0263F4]">How it works?</p>
     <hr />
-    <p class="text-[18px] font-inter text-start m-[25px]">
+    <p class="text-[16px] font-inter text-start m-[25px] text-justify leading-7">
       Finiam Secrets transmits E2E messages safely by encrypting the user
       info locally and then generating a URL with a private key embedded on
-      it. <br />
+      it. 
       When you generate a secret, the web app posts the encrypted information
-      to our API, which in turn stores that encrypted information. <br />
+      to our API, which in turn stores that encrypted information. 
       Each secret can only be opened once - secrets get destroyed after they
       have been opened or after they expire.
     </p>

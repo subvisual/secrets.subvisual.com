@@ -84,7 +84,6 @@
       await progress.set(1);
       submitting = false;
     } catch (error) {
-      console.error("Error:", error);
       goto("/error");
       submitting = false;
     }
@@ -167,9 +166,9 @@
       </div>
       <div class="flex flex-wrap justify-center items-center mt-[10px]">
         {#each images as image, index}
-          <div class="relative m-[5px]">
+          <div class="relative m-[5px] mt-[15px]">
             <img
-              class="max-w-[100px] max-h-[100px] object-cover"
+              class="max-w-[200px] max-h-[100px] object-cover cursor-pointer"
               src={URL.createObjectURL(image)}
               alt="Uploaded"
             />
@@ -194,7 +193,7 @@
       >
         <a
           href={sharingUrl}
-          class="inline-block break-words w-[880px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto underline text-[#0263F4]"
+          class="inline-block break-words w-[880px] max-w-[880px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto underline text-[#0263F4]"
           >{sharingUrl}</a
         >
       </div>
