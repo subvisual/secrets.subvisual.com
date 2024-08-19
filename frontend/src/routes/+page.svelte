@@ -21,13 +21,11 @@
   });
 
   const duration = [
-    { value: 800, label: `Secret's Lifetime` },
     { value: 21600, label: `6 hours` },
     { value: 3600, label: `1 hour` },
     { value: 1800, label: `30 min` },
     { value: 900, label: `15 min` },
   ];
-  let expiry = 800;
   let submitting = false;
   let secretText: string;
   let fileinput;
@@ -39,6 +37,25 @@
   let sharingUrl: string;
   let roomId: string;
   let copyLabel = "Copy link";
+  let expiry: string;
+
+  let isOpen = false;
+  let selectedOption = "";
+
+  function toggleDropdown() {
+    isOpen = !isOpen;
+  }
+
+  function selectOption(option) {
+    selectedOption = option.label;
+    expiry = option.value;
+    isOpen = false;
+  }
+
+  function closeDropdown(event) {
+    isOpen = false;
+    event.stopPropagation();
+  }
 
   function handleFileInput(event) {
     const files = event.target.files;
@@ -96,6 +113,7 @@
     images = [];
     imageBase64Strings = [];
     secretText = "";
+    expiry = "";
     copyLabel = "Copy link!";
   }
 
@@ -134,14 +152,72 @@
       <div
         class="flex flex-wrap justify-center items-center w-full max-w-[980px] rounded-b-[20px] shadow-md p-[15px] bg-white box-border"
       >
-        <select
-          class="flex-1 min-w-[200px] max-w-[250px] h-[55px] m-[10px] font-inter text-[16px] font-medium leading-[20px] text-center border border-[#0263f4] bg-white text-[#0263f4] p-[16px] rounded-full cursor-pointer"
-          bind:value={expiry}
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div
+          class="relative inline-block text-left w-full max-w-xs"
+          on:click={toggleDropdown}
         >
-          {#each duration as { value, label }}
-            <option {value}>{label}</option>
-          {/each}
-        </select>
+          <div
+            class="flex flex-col items-start justify-between h-[55px] m-[10px] p-[16px] bg-white text-[#0263f4] border border-[#0263f4] rounded-full cursor-pointer"
+          >
+            <!-- Selected Option -->
+            {#if selectedOption}
+                <span class="text-[14px] font-medium font-inter text-[#729CC5] justify-center">
+                  Secret's Lifetime: 
+                  <span class="text-[16px] font-medium font-inter text-[#0263f4]">
+                    {selectedOption}
+                  </span>
+                </span>
+                
+            {:else}
+              <div class="text-[16px] font-medium font-inter text-left">
+                Secret's Lifetime
+              </div>
+            {/if}
+            <!-- Dropdown Icon -->
+            <svg
+              class="w-5 h-5 text-[#0263f4] absolute right-4 top-1/2 transform -translate-y-1/2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </div>
+
+          {#if isOpen}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div
+              class="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+            >
+              {#each duration as option}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <div
+                  class="px-4 py-2 cursor-pointer text-[16px] font-medium text-[#0263f4] hover:bg-[#0263f4] hover:text-white rounded-lg"
+                  on:click={(event) => {
+                    event.stopPropagation();
+                    selectOption(option);
+                  }}
+                >
+                  {option.label}
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        {#if isOpen}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <div class="fixed inset-0 z-0" on:click={closeDropdown}></div>
+        {/if}
 
         <input
           type="file"
@@ -160,7 +236,7 @@
 
         <Button
           on:click={handleClick}
-          class={`lg primary ${!secretText ? "lg primary disabled" : "lg primary"} `}
+          class={`lg primary ${!secretText || !expiry ? "lg primary disabled" : "lg primary"} `}
           >Create a secret link</Button
         >
       </div>
