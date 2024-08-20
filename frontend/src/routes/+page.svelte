@@ -37,7 +37,7 @@
   let sharingUrl: string;
   let roomId: string;
   let copyLabel = "Copy link";
-  let expiry: string;
+  let expiry = 900;
 
   let isOpen = false;
   let selectedOption = "";
@@ -113,7 +113,7 @@
     images = [];
     imageBase64Strings = [];
     secretText = "";
-    expiry = "";
+    expiry = 900;
     copyLabel = "Copy link!";
   }
 
@@ -144,38 +144,38 @@
     </div>
     <div align="center" class="flex flex-col items-center w-full">
       <textarea
-        class="w-full max-w-[980px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none shadow-md text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border"
+        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none shadow-md text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border"
         bind:value={secretText}
         placeholder="Write your information here..."
       />
 
       <div
-        class="flex flex-wrap justify-center items-center w-full max-w-[980px] rounded-b-[20px] shadow-md p-[15px] bg-white box-border"
+        class="flex flex-wrap justify-center items-center w-full max-w-[380px] md:max-w-[980px] rounded-b-[20px] shadow-md p-[15px] bg-white box-border"
       >
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
-          class="relative inline-block text-left w-full max-w-xs"
+          class="relative inline-block text-left w-full max-w-[250px] m-[10px]"
           on:click={toggleDropdown}
         >
           <div
-            class="flex flex-col items-start justify-between h-[55px] m-[10px] p-[16px] bg-white text-[#0263f4] border border-[#0263f4] rounded-full cursor-pointer"
+            class="flex max-w-[250px] flex-col items-start justify-between md:h-[55px] h-[45px] p-[16px] bg-white text-[#0263f4] border border-[#0263f4] rounded-full cursor-pointer"
           >
             <!-- Selected Option -->
             {#if selectedOption}
-                <span class="text-[14px] font-medium font-inter text-[#729CC5] justify-center">
-                  Secret's Lifetime: 
-                  <span class="text-[16px] font-medium font-inter text-[#0263f4]">
-                    {selectedOption}
-                  </span>
+              <span
+                class="text-[14px] font-medium font-inter text-[#729CC5] justify-center"
+              >
+                Secret's Lifetime:
+                <span class="text-[16px] font-medium font-inter text-[#0263f4]">
+                  {selectedOption}
                 </span>
-                
+              </span>
             {:else}
               <div class="text-[16px] font-medium font-inter text-left">
                 Secret's Lifetime
               </div>
             {/if}
-            <!-- Dropdown Icon -->
             <svg
               class="w-5 h-5 text-[#0263f4] absolute right-4 top-1/2 transform -translate-y-1/2"
               fill="none"
@@ -195,12 +195,12 @@
           {#if isOpen}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
             <div
-              class="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg"
+              class="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-[5px]"
             >
               {#each duration as option}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <div
-                  class="px-4 py-2 cursor-pointer text-[16px] font-medium text-[#0263f4] hover:bg-[#0263f4] hover:text-white rounded-lg"
+                  class="cursor-pointer text-[16px] font-medium text-[#0263f4] hover:bg-[#0263f4] hover:text-white rounded-lg px-[10px]"
                   on:click={(event) => {
                     event.stopPropagation();
                     selectOption(option);
@@ -228,7 +228,7 @@
           bind:this={fileinput}
         />
         <Button
-          class="lg sec"
+          class="lg sec md:h-[55px] h-[45px]"
           on:click={() => {
             fileinput.click();
           }}>Import Image</Button
@@ -236,25 +236,29 @@
 
         <Button
           on:click={handleClick}
-          class={`lg primary ${!secretText || !expiry ? "lg primary disabled" : "lg primary"} `}
+          class={`lg primary md:h-[55px] h-[45px] ${!secretText || !expiry ? "lg primary disabled" : "lg primary"} `}
           >Create a secret link</Button
         >
       </div>
       <div class="flex flex-wrap justify-center items-center mt-[10px]">
         {#each images as image, index}
-          <div class="relative m-[5px] mt-[15px]">
+          <div class="relative m-[5px]">
             <img
-              class="max-w-[200px] max-h-[100px] object-cover cursor-pointer"
+              class="w-[200px] h-[100px] object-cover cursor-pointer rounded"
               src={URL.createObjectURL(image)}
               alt="Uploaded"
             />
             <button
-              class="absolute top-0 right-0 bg-white text-black border-none cursor-pointer py-[2px] px-[5px] text-[12px]"
-              on:click={() => removeImage(index)}>x</button
+              class="absolute top-[5px] right-[5px] bg-white text-black border-none cursor-pointer text-[14px] rounded-full w-[20px] h-[20px] flex items-center justify-center"
+              on:click={() => removeImage(index)}
             >
+              x
+            </button>
           </div>
         {/each}
       </div>
+      
+      
     </div>
   </div>
 {:else if !submitting && sharingUrl}
@@ -265,20 +269,24 @@
         then it is utterly destroyed.
       </p>
       <div
-        class="inline-block break-words w-full max-w-[880px] h-[112px] rounded-[12px] bg-white flex justify-center items-center text-center"
+        class="inline-block break-words w-full max-w-[380px] md:max-w-[980px] md:h-[190px] h-[160px] rounded-[12px] bg-white flex justify-center items-center text-center"
       >
         <a
           href={sharingUrl}
-          class="inline-block break-words w-[880px] max-w-[880px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto underline text-[#0263F4]"
+          class="inline-block break-words max-w-[380px] md:max-w-[980px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto underline text-[#0263F4]"
           >{sharingUrl}</a
         >
+
       </div>
       <div
         class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
       >
-        <Button class="lg sec" on:click={() => newSecret()}>Reset</Button>
-        <Button class="lg primary" on:click={() => copyToClipboard()}
-          >{copyLabel}</Button
+        <Button class="lg sec md:h-[55px] h-[45px]" on:click={() => newSecret()}
+          >Reset</Button
+        >
+        <Button
+          class="lg primary md:h-[55px] h-[45px]"
+          on:click={() => copyToClipboard()}>{copyLabel}</Button
         >
       </div>
     </div>
@@ -300,7 +308,7 @@
 
       <Modal bind:showModal></Modal>
       <div
-        class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
+        class="w-full max-w-[380px] md:max-w-[980px] md:h-[190px] h-[160px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
       >
         <p
           class="font-inter text-[20px] font-semibold leading-[24px] text-[#045cfc] mb-[10px]"

@@ -30,7 +30,7 @@
     <div
       class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
     >
-      <Button on:click={() => createNewSecret()} class="lg sec"
+      <Button on:click={() => createNewSecret()} class="lg sec md:h-[55px] h-[45px]"
         >Create New Secret</Button
       >
     </div>

@@ -81,10 +81,10 @@
       <div
         class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
       >
-        <Button class="lg sec" on:click={() => newSecret()}
+        <Button class="lg sec md:h-[55px] h-[45px]" on:click={() => newSecret()}
           >Create New Secret</Button
         >
-        <Button class="lg primary" on:click={() => copyToClipboard()}
+        <Button class="lg primary md:h-[55px] h-[45px]" on:click={() => copyToClipboard()}
           >{copyLabel}</Button
         >
       </div>
@@ -121,7 +121,7 @@
       <div
         class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
       >
-        <Button on:click={() => revealSecret()} class="lg primary"
+        <Button on:click={() => revealSecret()} class="lg primary md:h-[55px] h-[45px]"
           >Reveal Secret</Button
         >
       </div>

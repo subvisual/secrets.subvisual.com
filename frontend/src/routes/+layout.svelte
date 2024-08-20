@@ -28,7 +28,7 @@
 
   <div class="relative w-full h-full">
     <div
-      class="mx-auto flex min-h-screen w-full flex-col justify-between gap-6 py-6 sm:w-5/6 md:gap-0 md:pt-8"
+      class="mx-auto min-w-3  min-h-screen w-full flex-col justify-between gap-6 py-6 sm:w-5/6 md:gap-0 md:pt-8"
     >
       <main>
         <div class="flex flex-col items-center justify-center p-5">
@@ -40,10 +40,10 @@
       </main>
 
       <footer
-        class="mx-auto flex w-7/12 flex-col items-center justify-between gap-6 md:flex-row text-sm tracking-tight"
+        class="mx-auto flex w-7/12 flex-col items-center justify-between text-sm tracking-tight"
       >
         <div
-          class="absolute left-[90px] top-[85vh] opacity-100 w-[524px] h-[48px]"
+          class="absolute left-[40px] sm:left-[70px] md:left-[70px] bottom-[50px] sm:bottom-[70px] md:bottom-[70px] lg:bottom-[70px] xl:bottom-[70px] opacity-100 w-[524px] h-[48px]"
         >
           <div
             class="flex items-center text-center text-[16px] font-inter mr-auto"
