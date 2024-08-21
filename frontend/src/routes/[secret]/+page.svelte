@@ -27,13 +27,14 @@
   let selectedImage = ""; 
   let imageModalVisible = false; 
 
+
   async function revealSecret() {
     try {
       const secret = await getRoomSecret(room);
       const encryptionKey = location.hash.substring(1);
       let decryptedSecret = await decryptData(secret, encryptionKey);
       const parsedSecret = JSON.parse(decryptedSecret);
-
+      console.log(parsedSecret);
       secretText = parsedSecret.text;
       images = parsedSecret.images;
       revealed = true;
@@ -44,7 +45,6 @@
 
   function newSecret() {
     goto("/");
-    submitting = false;
     sharingUrl = "";
     images = [];
     imageBase64Strings = [];

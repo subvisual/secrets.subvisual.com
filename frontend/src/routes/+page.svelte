@@ -1,14 +1,13 @@
 <script lang="ts">
-  // @ts-nocheck
   import Button from "../components/Button.svelte";
   import Modal from "../components/Modal.svelte";
   import {
     encryptData,
     generatePassphrase,
     convertFileToBase64,
+    compressImage,
   } from "$lib/crypto";
-  import { createSecret, deleteSecret } from "$lib/api";
-  import { onMount } from "svelte";
+  import { createSecret } from "$lib/api";
   import { tweened } from "svelte/motion";
   import { cubicOut } from "svelte/easing";
   import { goto } from "$app/navigation";
@@ -26,11 +25,11 @@
     { value: 1800, label: `30 min` },
     { value: 900, label: `15 min` },
   ];
-  let submitting = false;
+  let submitting: boolean = false;
   let secretText: string;
-  let fileinput;
-  let images = [];
-  let imageBase64Strings = [];
+  let fileinput: HTMLInputElement;
+  let images: any[] = [];
+  let imageBase64Strings: string[] = [];
 
   let encryptedText: string;
   let encryptionKey: string;
@@ -46,27 +45,38 @@
     isOpen = !isOpen;
   }
 
-  function selectOption(option) {
+  function selectOption(option: { value: any; label: any }) {
     selectedOption = option.label;
     expiry = option.value;
     isOpen = false;
   }
 
-  function closeDropdown(event) {
+  function closeDropdown(event: { stopPropagation: () => void }) {
     isOpen = false;
     event.stopPropagation();
   }
 
-  function handleFileInput(event) {
-    const files = event.target.files;
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      images = [...images, file];
+  function handleFileInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (input?.files) {
+      for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        images = [...images, file];
+      }
     }
   }
 
-  function removeImage(index) {
+  function removeImage(index: number) {
     images = images.filter((_, i) => i !== index);
+  }
+
+  async function compressAndConvertImages() {
+    for (let file of images) {
+      const compressedFile = await compressImage(file, { quality: 0.7 });
+      const base64String = await convertFileToBase64(compressedFile);
+      imageBase64Strings.push(base64String);
+    }
   }
 
   async function handleClick() {
@@ -75,8 +85,7 @@
       await progress.set(0);
 
       if (images.length > 0) {
-        const promises = images.map((file) => convertFileToBase64(file));
-        imageBase64Strings = await Promise.all(promises);
+        await compressAndConvertImages();
         await progress.set(0.4);
       }
 
@@ -101,6 +110,7 @@
       await progress.set(1);
       submitting = false;
     } catch (error) {
+      console.error(error);
       goto("/error");
       submitting = false;
     }
@@ -126,23 +136,20 @@
 <!-- svelte-ignore empty-block -->
 {#if !submitting && !sharingUrl}
   <div class="page-container relative z-2">
-    <div align="center">
-      <p align="center" class="text-[20px] font-inter m-[25px]">
+    <div class="flex flex-col items-center justify-center ">
+      <p class="text-[20px] font-inter m-[25px] text-center">
         Share information securely and ephemerally. <br />The generated link
         will only work once, then it will disappear forever.
       </p>
-
       <button
         on:click={() => (showModal = true)}
-        align="center"
         class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
       >
         How it works?
       </button>
-
       <Modal bind:showModal></Modal>
     </div>
-    <div align="center" class="flex flex-col items-center w-full">
+    <div class="flex flex-col items-center w-full content-center">
       <textarea
         class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none shadow-md text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border"
         bind:value={secretText}
@@ -257,13 +264,11 @@
           </div>
         {/each}
       </div>
-      
-      
     </div>
   </div>
 {:else if !submitting && sharingUrl}
   <div class="page-container relative z-2">
-    <div align="center">
+    <div class="flex flex-col items-center justify-center">
       <p class="text-[20px] font-inter m-[25px]">
         Your secret is ready. Keep in mind the link can only be revealed once,
         then it is utterly destroyed.
@@ -276,7 +281,6 @@
           class="inline-block break-words max-w-[380px] md:max-w-[980px] font-inter text-[20px] font-normal leading-[32px] text-center mx-auto underline text-[#0263F4]"
           >{sharingUrl}</a
         >
-
       </div>
       <div
         class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
@@ -293,14 +297,13 @@
   </div>
 {:else}
   <div class="page-container relative z-2">
-    <div align="center">
+    <div class="flex flex-col items-center justify-center">
       <p>
         Share information securely and ephemerally. <br />The generated link
         will only work once, then it will disappear forever.
       </p>
       <button
         on:click={() => (showModal = true)}
-        align="center"
         class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
       >
         How it works?
@@ -315,7 +318,7 @@
         >
           Encrypting your secret...
         </p>
-        <div align="left">
+        <div class="content-start">
           <progress
             class="w-full max-w-[880px] h-[16px] rounded-full"
             value={$progress}
