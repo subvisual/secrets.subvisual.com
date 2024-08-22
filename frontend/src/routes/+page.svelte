@@ -11,6 +11,24 @@
   import { tweened } from "svelte/motion";
   import { cubicOut } from "svelte/easing";
   import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
+  import { writable } from "svelte/store";
+
+  let progressText = writable(0.5);
+
+  onMount(() => {
+    const interval = setInterval(() => {
+      progressText.update((n) => {
+        if (n >= 1) {
+          clearInterval(interval);
+          return n;
+        }
+        return n + 0.01;
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  });
 
   let showModal = false;
 
@@ -136,7 +154,7 @@
 <!-- svelte-ignore empty-block -->
 {#if !submitting && !sharingUrl}
   <div class="page-container relative z-2">
-    <div class="flex flex-col items-center justify-center ">
+    <div class="flex flex-col items-center justify-center">
       <p class="text-[20px] font-inter m-[25px] text-center">
         Share information securely and ephemerally. <br />The generated link
         will only work once, then it will disappear forever.
@@ -274,7 +292,7 @@
         then it is utterly destroyed.
       </p>
       <div
-        class="inline-block break-words w-full max-w-[380px] md:max-w-[980px] md:h-[190px] h-[160px] rounded-[12px] bg-white flex justify-center items-center text-center"
+        class="inline-block break-words w-full max-w-[380px] md:max-w-[980px] md:h-[120px] h-[100px] rounded-[12px] bg-white flex justify-center items-center text-center"
       >
         <a
           href={sharingUrl}
@@ -298,10 +316,7 @@
 {:else}
   <div class="page-container relative z-2">
     <div class="flex flex-col items-center justify-center">
-      <p>
-        Share information securely and ephemerally. <br />The generated link
-        will only work once, then it will disappear forever.
-      </p>
+      <p>We're encrypting your information and generating your secret link.</p>
       <button
         on:click={() => (showModal = true)}
         class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
@@ -311,13 +326,22 @@
 
       <Modal bind:showModal></Modal>
       <div
-        class="w-full max-w-[380px] md:max-w-[980px] md:h-[190px] h-[160px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
+        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-2160px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
       >
-        <p
-          class="font-inter text-[20px] font-semibold leading-[24px] text-[#045cfc] mb-[10px]"
-        >
-          Encrypting your secret...
-        </p>
+      <p>
+        <span class="text-4xl">
+          🤫
+        </span>
+        <br/>
+        {#each "Shhhush" as letter, i}
+          <span
+            class="letter-animation font-inter text-[32px] font-semibold leading-[38.4px] mb-[10px] text-center"
+            style="animation-delay: {i * 0.3}s"
+          >
+            {letter}
+          </span>
+        {/each}
+      </p>
         <div class="content-start">
           <progress
             class="w-full max-w-[880px] h-[16px] rounded-full"
@@ -352,5 +376,22 @@
   progress::-moz-progress-bar {
     background: linear-gradient(90deg, #2c8dff 0%, #0263f4 100%);
     border-radius: 24px;
+  }
+
+  .letter-animation {
+    display: inline-block;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      color: #9bc5f6;
+    }
+    100% {
+      opacity: 1;
+      color: #045cfc;
+    }
   }
 </style>

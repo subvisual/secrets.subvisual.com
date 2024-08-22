@@ -22,7 +22,7 @@
 <div
   class="h-full w-full overflow-hidden bg-[#f0f7fe] font-inter tracking-tight text-[#333333] antialiased outline-[#333333]"
 >
-  <div class="absolute right-0 bottom-0 z-0">
+  <div class="fixed right-0 bottom-0 z-0">
     <IconLayout />
   </div>
 
@@ -43,7 +43,7 @@
         class="mx-auto flex w-7/12 flex-col items-center justify-between text-sm tracking-tight"
       >
         <div
-          class="absolute left-[40px] sm:left-[70px] md:left-[70px] bottom-[50px] sm:bottom-[70px] md:bottom-[70px] lg:bottom-[70px] xl:bottom-[70px] opacity-100 w-[524px] h-[48px]"
+          class="fixed left-[40px] sm:left-[70px] md:left-[70px] bottom-[50px] sm:bottom-[70px] md:bottom-[70px] lg:bottom-[70px] xl:bottom-[70px] opacity-100 w-[524px] h-[48px]"
         >
           <div
             class="flex items-center text-center text-[16px] font-inter mr-auto"

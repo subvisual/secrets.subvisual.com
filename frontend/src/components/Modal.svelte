@@ -21,7 +21,7 @@
         on:click|stopPropagation 
         class="p-10"
     >
-    <p class="text-[20px] font-inter font-bold mb-[15px] text-[#0263F4]">How it works?</p>
+    <p class="text-[20px] font-inter font-bold mb-[15px] text-[#0263F4] text-center">How it works?</p>
     <hr />
     <p class="text-[16px] font-inter text-start m-[25px] text-justify leading-7">
       Finiam Secrets transmits E2E messages safely by encrypting the user
