@@ -1,5 +1,4 @@
 const API_URL = import.meta.env.VITE_API_URL;
-console.log(import.meta.env);
 export type fetchType = (
   info: RequestInfo,
   init?: RequestInit
@@ -45,11 +44,14 @@ export async function checkIfRoomExists(
   room: string,
   fetch = globalThis.fetch
 ): Promise<boolean> {
-  const response = await fetch(`${API_URL}/api/secrets/${room}`, {
-    method: "HEAD",
-  });
-
-  return response.status === 200;
+  try {
+    const response = await fetch(`${API_URL}/api/secrets/${room}`, {
+      method: "HEAD",
+    });
+    return response.status === 200;
+  } catch (error) {
+    throw "No room available!";
+  }
 }
 
 export async function getRoomSecret(
@@ -57,7 +59,6 @@ export async function getRoomSecret(
   fetch = globalThis.fetch
 ): Promise<string> {
   let response, body;
-
   try {
     response = await fetch(`${API_URL}/api/secrets/${room}`, { method: "GET" });
     body = await response.json();

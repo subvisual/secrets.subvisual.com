@@ -16,6 +16,10 @@
   import { cubicOut } from "svelte/easing";
   import { goto } from "$app/navigation";
 
+  onMount(() => {
+        // Code that relies on `window`
+        console.log(window.location.href);
+    });
   export let data: PageData;
 
   let { room, roomExists } = data;
@@ -34,7 +38,6 @@
       const encryptionKey = location.hash.substring(1);
       let decryptedSecret = await decryptData(secret, encryptionKey);
       const parsedSecret = JSON.parse(decryptedSecret);
-      console.log(parsedSecret);
       secretText = parsedSecret.text;
       images = parsedSecret.images;
       revealed = true;
@@ -45,10 +48,8 @@
 
   function newSecret() {
     goto("/");
-    sharingUrl = "";
     images = [];
-    imageBase64Strings = [];
-    secretText = "";
+    secretText = ""; 
     copyLabel = "Copy link!";
   }
 

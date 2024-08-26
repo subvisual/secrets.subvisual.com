@@ -316,7 +316,7 @@
 {:else}
   <div class="page-container relative z-2">
     <div class="flex flex-col items-center justify-center">
-      <p>We're encrypting your information and generating your secret link.</p>
+      <p class="text-[20px] font-inter m-[25px]">We're encrypting your information and generating your secret link.</p>
       <button
         on:click={() => (showModal = true)}
         class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
@@ -326,7 +326,7 @@
 
       <Modal bind:showModal></Modal>
       <div
-        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-2160px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
+        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-260px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
       >
       <p>
         <span class="text-4xl">
