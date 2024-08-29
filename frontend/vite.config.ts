@@ -7,12 +7,8 @@ export default defineConfig(async ({ mode }) => {
       return 'http://localhost:4000';
     }
 
-    const prNumber = process.env['REVIEW_ID'];
-
-    if (prNumber) return `https://subvisual-secrets-pr-${prNumber}.herokuapp.com`;
-
-    return `https://subvisual-secrets.herokuapp.com`;
-  }
+    return `https://finiam-secrets.herokuapp.com`;
+}
 
   const apiUrl = buildApiUrl();
   console.log('RUNNING WITH THE FOLLOWING API_URL', apiUrl);
