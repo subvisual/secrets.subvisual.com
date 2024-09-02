@@ -17,7 +17,6 @@
   import { goto } from "$app/navigation";
 
   onMount(() => {
-        // Code that relies on `window`
         console.log(window.location.href);
     });
   export let data: PageData;
