@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import crypto from "crypto";
-import { TextEncoder, TextDecoder } from "util";
+import { TextEncoder, TextDecoder, promisify } from "util";
 import config from "./config.js";
 
 
@@ -20,8 +20,13 @@ program
   .argument("<expiry>", "Secret Duration")
   .action(async (text, expiry) => {
     try {
+      const combinedData = {
+        text: text,
+        images: [],
+      };
+      const combinedString = JSON.stringify(combinedData);
       const encryptionKey = generatePassphrase();
-      const encryptedText = await encryptData(text, encryptionKey);
+      const encryptedText = await encryptData(combinedString, encryptionKey);
       const roomId = await createSecret({
         secret: encryptedText,
         expiry: Number(expiry),
@@ -45,8 +50,10 @@ program
       const secret = await getRoomSecret(room);
       const encryptionKey = text.split("#")[1];
       let decryptedSecret = await decryptData(secret, encryptionKey);
+      const parsedSecret = JSON.parse(decryptedSecret);
+      let secretText = parsedSecret.text;
       console.log("Secret revealed!!\n\n");
-      console.log(decryptedSecret, '\n');
+      console.log(secretText, '\n');
     } catch (error) {
       console.error("Error revealing secret:", error);
     }
@@ -54,43 +61,55 @@ program
 
 program.parse(process.argv);
 
-function getPasswordKey(passphrase) {
+async function getPasswordKey(passphrase) {
   const encoder = new TextEncoder();
-  return crypto.pbkdf2Sync(encoder.encode(passphrase), "", 1, 32, "sha256");
+  const keyMaterial = await crypto.webcrypto.subtle.importKey(
+    "raw",
+    encoder.encode(passphrase),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"]
+  );
+  return keyMaterial;
 }
 
-function deriveKey(passwordKey, salt, usages) {
-  return crypto.pbkdf2Sync(passwordKey, salt, 100000, 32, "sha256");
+async function deriveKey(passwordKey, salt, usages) {
+  return crypto.webcrypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: salt,
+      iterations: 100000,
+      hash: "SHA-256",
+    },
+    passwordKey,
+    { name: "AES-GCM", length: 256 },
+    true,
+    usages
+  );
 }
 
-function base64ToBuffer(base64) {
-  const binaryString = Buffer.from(base64, "base64").toString("binary");
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
+const base64ToBuffer = (base64) => {
+  return Buffer.from(base64, "base64");
+};
 
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-
-  return bytes;
-}
-
-function bufferToBase64(buffer) {
-  return Buffer.from(buffer).toString("base64");
-}
+const bufferToBase64 = (buffer) => {
+  return buffer.toString("base64");
+};
 
 function generatePassphrase() {
   return crypto.randomBytes(16).toString("hex");
 }
 
-async function encryptData(data, passphrase) {
-  const salt = crypto.randomBytes(16);
-  const iv = crypto.randomBytes(12);
+export async function encryptData(data, passphrase) {
+  const salt = crypto.randomBytes(16); 
+  const iv = crypto.randomBytes(12); 
 
-  const passwordKey = getPasswordKey(passphrase);
-  const aesKey = deriveKey(passwordKey, salt, ["encrypt"]);
+  const passwordKey = await getPasswordKey(passphrase);
+  const aesKey = await deriveKey(passwordKey, salt, ["encrypt"]);
 
-  const cipher = crypto.createCipheriv("aes-256-gcm", aesKey, iv);
+  const keyBuffer = Buffer.from(await crypto.webcrypto.subtle.exportKey("raw", aesKey));
+
+  const cipher = crypto.createCipheriv("aes-256-gcm", keyBuffer, iv);
 
   let encryptedContent = cipher.update(data, "utf8");
   encryptedContent = Buffer.concat([encryptedContent, cipher.final()]);
@@ -98,9 +117,9 @@ async function encryptData(data, passphrase) {
   const authTag = cipher.getAuthTag(); 
 
   const combined = Buffer.concat([salt, iv, encryptedContent, authTag]);
-
-  return bufferToBase64(combined);
+  return bufferToBase64(combined); 
 }
+
 
 
 async function decryptData(encryptedText, passphrase) {
@@ -112,11 +131,13 @@ async function decryptData(encryptedText, passphrase) {
     const authTag = encryptedData.slice(-16); 
     const encryptedContent = encryptedData.slice(28, -16); 
 
-    const passwordKey = getPasswordKey(passphrase);
-    const aesKey = deriveKey(passwordKey, salt, ["decrypt"]);
+    const passwordKey = await getPasswordKey(passphrase);
+    const aesKey = await deriveKey(passwordKey, salt, ["decrypt"]);
 
-    const decipher = crypto.createDecipheriv("aes-256-gcm", aesKey, iv);
-    decipher.setAuthTag(authTag); 
+    const keyBuffer = Buffer.from(await crypto.webcrypto.subtle.exportKey("raw", aesKey));
+
+    const decipher = crypto.createDecipheriv("aes-256-gcm", keyBuffer, iv);
+    decipher.setAuthTag(authTag);
 
     let decryptedContent = decipher.update(encryptedContent);
     decryptedContent = Buffer.concat([decryptedContent, decipher.final()]);
