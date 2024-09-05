@@ -3,7 +3,8 @@ import { Command } from "commander";
 import crypto from "crypto";
 import { TextEncoder, TextDecoder, promisify } from "util";
 import config from "./config.js";
-
+import fs from "fs/promises";
+import sharp from "sharp";
 
 const API_URL = config.apiUrl;
 const program = new Command();
@@ -13,16 +14,34 @@ program
   .description("CLI tool to create your secrets")
   .version("1.0.0");
 
+//secrets create "secret message" 3600 -i ./image2.png
 program
   .command("create")
   .description("Create a secret")
   .argument("<text>", "Secret text")
   .argument("<expiry>", "Secret Duration")
-  .action(async (text, expiry) => {
+  .option("-i, --images <images...>", "Secret images", [])
+  .action(async (text, expiry, options) => {
     try {
+      const { images } = options;
+      let imageBase64Strings = [];
+      if (images && images.length > 0) {
+        for (const imagePath of images) {
+          try {
+            const fileBuffer = await fs.readFile(imagePath);
+            const compressedFile = await compressImage(fileBuffer, 0.7);
+            const base64String = await convertFileToBase64(compressedFile);
+            imageBase64Strings.push(base64String);
+          } catch (err) {
+            console.error(`Error reading image file at ${imagePath}:`, err);
+            throw err;
+          }
+        }
+      }
+
       const combinedData = {
         text: text,
-        images: [],
+        images: imageBase64Strings,
       };
       const combinedString = JSON.stringify(combinedData);
       const encryptionKey = generatePassphrase();
@@ -34,7 +53,7 @@ program
       let sharingUrl = `http://localhost:5173/${roomId}#${encryptionKey}`;
 
       console.log("Secret created!\n");
-      console.log("Sharing URL: ", sharingUrl, '\n');
+      console.log("Sharing URL: ", sharingUrl, "\n");
     } catch (error) {
       console.error("Error creating secret:", error);
     }
@@ -46,14 +65,14 @@ program
   .argument("<text>", "Secret URL")
   .action(async (text) => {
     try {
-      const room = text.split('/')[3].split('#')[0];
+      const room = text.split("/")[3].split("#")[0];
       const secret = await getRoomSecret(room);
       const encryptionKey = text.split("#")[1];
       let decryptedSecret = await decryptData(secret, encryptionKey);
       const parsedSecret = JSON.parse(decryptedSecret);
       let secretText = parsedSecret.text;
       console.log("Secret revealed!!\n\n");
-      console.log(secretText, '\n');
+      console.log(secretText, "\n");
     } catch (error) {
       console.error("Error revealing secret:", error);
     }
@@ -100,27 +119,27 @@ function generatePassphrase() {
   return crypto.randomBytes(16).toString("hex");
 }
 
-export async function encryptData(data, passphrase) {
-  const salt = crypto.randomBytes(16); 
-  const iv = crypto.randomBytes(12); 
+async function encryptData(data, passphrase) {
+  const salt = crypto.randomBytes(16);
+  const iv = crypto.randomBytes(12);
 
   const passwordKey = await getPasswordKey(passphrase);
   const aesKey = await deriveKey(passwordKey, salt, ["encrypt"]);
 
-  const keyBuffer = Buffer.from(await crypto.webcrypto.subtle.exportKey("raw", aesKey));
+  const keyBuffer = Buffer.from(
+    await crypto.webcrypto.subtle.exportKey("raw", aesKey)
+  );
 
   const cipher = crypto.createCipheriv("aes-256-gcm", keyBuffer, iv);
 
   let encryptedContent = cipher.update(data, "utf8");
   encryptedContent = Buffer.concat([encryptedContent, cipher.final()]);
 
-  const authTag = cipher.getAuthTag(); 
+  const authTag = cipher.getAuthTag();
 
   const combined = Buffer.concat([salt, iv, encryptedContent, authTag]);
-  return bufferToBase64(combined); 
+  return bufferToBase64(combined);
 }
-
-
 
 async function decryptData(encryptedText, passphrase) {
   try {
@@ -128,13 +147,15 @@ async function decryptData(encryptedText, passphrase) {
 
     const salt = encryptedData.slice(0, 16);
     const iv = encryptedData.slice(16, 28);
-    const authTag = encryptedData.slice(-16); 
-    const encryptedContent = encryptedData.slice(28, -16); 
+    const authTag = encryptedData.slice(-16);
+    const encryptedContent = encryptedData.slice(28, -16);
 
     const passwordKey = await getPasswordKey(passphrase);
     const aesKey = await deriveKey(passwordKey, salt, ["decrypt"]);
 
-    const keyBuffer = Buffer.from(await crypto.webcrypto.subtle.exportKey("raw", aesKey));
+    const keyBuffer = Buffer.from(
+      await crypto.webcrypto.subtle.exportKey("raw", aesKey)
+    );
 
     const decipher = crypto.createDecipheriv("aes-256-gcm", keyBuffer, iv);
     decipher.setAuthTag(authTag);
@@ -149,7 +170,6 @@ async function decryptData(encryptedText, passphrase) {
     return "";
   }
 }
-
 
 async function createSecret({ secret, expiry }) {
   try {
@@ -179,7 +199,9 @@ async function createSecret({ secret, expiry }) {
 
 async function getRoomSecret(room) {
   try {
-    const response = await fetch(`${API_URL}/api/secrets/${room}`, { method: "GET" });
+    const response = await fetch(`${API_URL}/api/secrets/${room}`, {
+      method: "GET",
+    });
     if (response.status === 404) {
       throw new Error("No such secret!");
     } else if (response.status !== 200) {
@@ -190,5 +212,34 @@ async function getRoomSecret(room) {
   } catch (error) {
     console.error("Error in getRoomSecret:", error);
     throw error;
+  }
+}
+
+async function convertFileToBase64(fileBuffer) {
+  return fileBuffer.toString('base64');
+}
+
+async function compressImage(fileBuffer, quality = 0.7) {
+  try {
+    const image = sharp(fileBuffer);
+    const metadata = await image.metadata();
+
+    const MAX_WIDTH = 1024;
+    const scaleSize = MAX_WIDTH / metadata.width;
+
+    if (metadata.width > MAX_WIDTH) {
+      const resizedImage = await image
+        .resize({
+          width: MAX_WIDTH,
+          height: Math.round(metadata.height * scaleSize),
+        })
+        .png({ quality: quality * 100 })
+        .toBuffer();
+      return resizedImage;
+    } else {
+      return await image.png({ quality: quality * 100 }).toBuffer();
+    }
+  } catch (error) {
+    throw new Error("Image compression failed: " + error.message);
   }
 }

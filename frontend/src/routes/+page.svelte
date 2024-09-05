@@ -54,7 +54,7 @@
   let sharingUrl: string;
   let roomId: string;
   let copyLabel = "Copy link";
-  let expiry = 900;
+  let expiry = 21600;
 
   let isOpen = false;
   let selectedOption = "";
