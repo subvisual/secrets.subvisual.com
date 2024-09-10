@@ -6,5 +6,3 @@ config :secrets_api, SecretsApiWeb.Endpoint,
   check_origin: false
 
 config :logger, level: :info
-
-import_config "prod.secret.exs"

@@ -8,12 +8,6 @@ defmodule SecretsApiWeb.Router do
     plug CORSPlug
   end
 
-  pipeline :auth do
-    import Plug.BasicAuth
-
-    plug :basic_auth, Application.compile_env(:secrets_api, :basic_auth)
-  end
-
   scope "/api", SecretsApiWeb do
     pipe_through :api
 
@@ -25,14 +19,8 @@ defmodule SecretsApiWeb.Router do
   end
 
   scope "/" do
-    pipelines =
-      if Mix.env() in [:dev, :test] do
-        [:fetch_session, :protect_from_forgery]
-      else
-        [:fetch_session, :protect_from_forgery, :auth]
-      end
+    pipe_through [:fetch_session, :protect_from_forgery]
 
-    pipe_through pipelines
     live_dashboard "/dashboard", metrics: SecretsApiWeb.Telemetry
   end
 end
