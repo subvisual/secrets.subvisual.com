@@ -7,7 +7,7 @@ export default defineConfig(async ({ mode }) => {
       return 'http://localhost:4000';
     }
 
-    return `https://finiam-secrets.herokuapp.com`;
+    return `https://secrets-subvisual-com.fly.dev`;
 }
 
   const apiUrl = buildApiUrl();

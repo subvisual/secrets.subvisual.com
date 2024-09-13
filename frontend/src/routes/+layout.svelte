@@ -57,7 +57,7 @@
           </div>
           <p class="absolute mr-auto mt-[18px] text-left text-[18px]">
             <a 
-              href="https://github.com/finiam/secrets.finiam.com"
+              href="https://github.com/subvisual/secrets.subvisual.com"
               target="_blank"
               rel="noopener"><b class='underline'>Open source</b></a
             >

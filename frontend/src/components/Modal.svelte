@@ -24,7 +24,7 @@
     <p class="text-[20px] font-inter font-bold mb-[15px] text-[#0263F4] text-center">How it works?</p>
     <hr />
     <p class="text-[16px] font-inter text-start m-[25px] text-justify leading-7">
-      Finiam Secrets transmits E2E messages safely by encrypting the user
+      Subvisual Secrets transmits E2E messages safely by encrypting the user
       info locally and then generating a URL with a private key embedded on
       it. 
       When you generate a secret, the web app posts the encrypted information
