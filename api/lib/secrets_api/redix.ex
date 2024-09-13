@@ -9,7 +9,9 @@ defmodule SecretsApi.Redix do
     children =
       for index <- 0..(@pool_size - 1) do
         Supervisor.child_spec(
-          {Redix, {Application.fetch_env!(:secrets_api, :redis_url), [name: :"redix_#{index}"]}},
+          {Redix,
+           {Application.fetch_env!(:secrets_api, :redis_url),
+            [name: :"redix_#{index}", socket_opts: [:inet6]]}},
           id: {Redix, index}
         )
       end
