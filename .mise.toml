@@ -1,0 +1,23 @@
+[tasks.default]
+depends = ["dev-api", "dev-frontend"]
+alias = "d"
+
+[tasks.dev-api]
+run = "cd api; mix phx.server"
+alias = "api"
+
+[tasks.dev-frontend]
+run = "cd frontend; yarn dev"
+alias = "ui"
+
+[tasks.setup]
+run = [
+  "cd frontend; yarn install",
+  "cd api; mix deps.get; mix ecto.setup"
+]
+
+[tasks.fix]
+run = [
+  "cd api; mix format",
+]
+alias = "f"
