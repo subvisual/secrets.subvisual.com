@@ -8,7 +8,7 @@ export default defineConfig(async ({ mode }) => {
     }
 
     return `https://secrets-subvisual-com.fly.dev`;
-}
+  }
 
   const apiUrl = buildApiUrl();
   console.log('RUNNING WITH THE FOLLOWING API_URL', apiUrl);

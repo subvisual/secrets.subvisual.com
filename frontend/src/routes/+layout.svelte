@@ -1,11 +1,11 @@
 <script lang="ts">
   import "../app.css";
-  import IconLayout from "../components/IconLayout.svelte";
   import IconLogo from "../components/IconLogo.svelte";
+  import background from "../lib/assets/background.png";
   import { getStats } from "../lib/api";
-  import { onMount } from 'svelte';
-  
-  let secretsCounter: string = '';
+  import { onMount } from "svelte";
+
+  let secretsCounter: string = "";
 
   onMount(async () => {
     try {
@@ -15,20 +15,18 @@
       console.error("Error fetching stats:", error);
     }
   });
-
-
 </script>
 
 <div
   class="h-full w-full overflow-hidden bg-[#f0f7fe] font-inter tracking-tight text-[#333333] antialiased outline-[#333333]"
 >
   <div class="fixed right-0 bottom-0 z-0">
-    <IconLayout />
+    <img src={background} alt="circular discs" />
   </div>
 
   <div class="relative w-full h-full">
     <div
-      class="mx-auto min-w-3  min-h-screen w-full flex-col justify-between gap-6 py-6 sm:w-5/6 md:gap-0 md:pt-8"
+      class="mx-auto min-w-3 min-h-screen w-full flex-col justify-between gap-6 py-6 sm:w-5/6 md:gap-0 md:pt-8"
     >
       <main>
         <div class="flex flex-col items-center justify-center p-5">
@@ -51,19 +49,28 @@
             <div
               class="flex items-center justify-center bg-[#cfe7ff] rounded-[32px] w-[88px] h-[48px]"
             >
-              <p class="font-bold font-inter text-[#045cfc]">{secretsCounter}</p>
+              <p class="font-bold font-inter text-[#045cfc]">
+                {secretsCounter}
+              </p>
             </div>
-            <p class="text-[18px] font-normal font-inter text-[#729cc5] ml-[10px]">Secrets Created</p>
+            <p
+              class="text-[18px] font-normal font-inter text-[#729cc5] ml-[10px]"
+            >
+              Secrets Created
+            </p>
           </div>
           <p class="absolute mr-auto mt-[18px] text-left text-[18px]">
-            <a 
+            <a
               href="https://github.com/subvisual/secrets.subvisual.com"
               target="_blank"
-              rel="noopener"><b class='underline'>Open source</b></a
+              rel="noopener"><b class="underline">Open source</b></a
             >
             project powered by
-            <a href="https://subvisual.com/" target="_blank" rel="noreferrer" class="font-bold font-inter text-[#045cfc] underline"
-              >Subvisual</a
+            <a
+              href="https://subvisual.com/"
+              target="_blank"
+              rel="noreferrer"
+              class="font-bold font-inter text-[#045cfc] underline">Subvisual</a
             >
           </p>
         </div>
