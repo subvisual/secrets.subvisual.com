@@ -169,13 +169,13 @@
     </div>
     <div class="flex flex-col items-center w-full content-center">
       <textarea
-        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none shadow-md text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border"
+        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border whitespace-pre"
         bind:value={secretText}
         placeholder="Write your information here..."
       />
 
       <div
-        class="flex flex-wrap justify-center items-center w-full max-w-[380px] md:max-w-[980px] rounded-b-[20px] shadow-md p-[15px] bg-white box-border"
+        class="flex flex-wrap justify-center items-center w-full max-w-[380px] md:max-w-[980px] rounded-b-[20px] p-[15px] bg-white box-border shadow-custom"
       >
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -292,7 +292,7 @@
         then it is utterly destroyed.
       </p>
       <div
-        class="inline-block break-words w-full max-w-[380px] md:max-w-[980px] md:h-[120px] h-[100px] rounded-[12px] bg-white flex justify-center items-center text-center"
+        class="flex break-words w-full max-w-[380px] md:max-w-[980px] md:h-[120px] h-[100px] rounded-[12px] bg-white justify-center items-center text-center shadow-custom"
       >
         <a
           href={sharingUrl}
@@ -326,7 +326,7 @@
 
       <Modal bind:showModal></Modal>
       <div
-        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-260px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
+        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-260px] border border-[#f8fbfd] rounded-[20px] bg-white p-[60px] shadow-custom"
       >
       <p>
         <span class="text-4xl">

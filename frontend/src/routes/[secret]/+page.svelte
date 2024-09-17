@@ -70,10 +70,10 @@
         Secret is revealed and is now permanently deleted from the system.
       </p>
       <div
-        class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-[20px] shadow-md bg-white p-[60px]"
+        class="w-full max-w-[880px] h-[240px] border border-[#f8fbfd] rounded-[20px] shadow-custom bg-white p-[60px]"
       >
         <p
-          class="font-inter text-[16px] font-semibold leading-[24px] text-[#729cc5] mb-[10px] text-start"
+          class="font-inter text-[16px] font-semibold leading-[24px] text-[#729cc5] mb-[10px] text-start whitespace-pre"
         >
           {secretText}
         </p>
