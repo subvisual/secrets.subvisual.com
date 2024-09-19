@@ -169,7 +169,7 @@
     </div>
     <div class="flex flex-col items-center w-full content-center">
       <textarea
-        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none text-[16px] text-[#729cc5] leading-[30px] text-left p-[30px] resize-none box-border whitespace-pre z-10"
+        class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-[240px] border border-[#f8fbfd] rounded-t-[20px] rounded-b-none text-[20px] text-[#729cc5] leading-6 text-left p-[30px] resize-none box-border whitespace-pre z-10 placeholder:font-inter placeholder:text-[20px] placeholder:leading-6 placeholder:text-[#729cc5]"
         bind:value={secretText}
         placeholder="Write your information here..."
       />
