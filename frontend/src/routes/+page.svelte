@@ -1,6 +1,7 @@
 <script lang="ts">
   import Button from "../components/Button.svelte";
   import Modal from "../components/Modal.svelte";
+  import SEO from "../components/SEO.svelte";
   import {
     encryptData,
     generatePassphrase,
@@ -150,6 +151,12 @@
     copyLabel = "Copied!";
   }
 </script>
+
+<SEO
+  title="Subvisual Secrets"
+  description="Subvisual Secrets allows you to share information securely and ephemerally. The generated link will only work once and then it will disappear forever."
+  keywords="secrets,share,end-to-end,encryption,subvisual"
+/>
 
 <!-- svelte-ignore empty-block -->
 {#if !submitting && !sharingUrl}
@@ -316,7 +323,9 @@
 {:else}
   <div class="page-container relative z-2">
     <div class="flex flex-col items-center justify-center">
-      <p class="text-[20px] font-inter m-[25px]">We're encrypting your information and generating your secret link.</p>
+      <p class="text-[20px] font-inter m-[25px]">
+        We're encrypting your information and generating your secret link.
+      </p>
       <button
         on:click={() => (showModal = true)}
         class="text-[18px] font-inter mb-[25px] underline text-[#0263F4]"
@@ -328,20 +337,18 @@
       <div
         class="w-full max-w-[380px] md:max-w-[980px] md:h-[290px] h-260px] border border-[#f8fbfd] rounded-[20px] bg-white p-[60px] shadow-custom"
       >
-      <p>
-        <span class="text-4xl">
-          🤫
-        </span>
-        <br/>
-        {#each "Shhhush" as letter, i}
-          <span
-            class="letter-animation font-inter text-[32px] font-semibold leading-[38.4px] mb-[10px] text-center"
-            style="animation-delay: {i * 0.3}s"
-          >
-            {letter}
-          </span>
-        {/each}
-      </p>
+        <p>
+          <span class="text-4xl"> 🤫 </span>
+          <br />
+          {#each "Shhhush" as letter, i}
+            <span
+              class="letter-animation font-inter text-[32px] font-semibold leading-[38.4px] mb-[10px] text-center"
+              style="animation-delay: {i * 0.3}s"
+            >
+              {letter}
+            </span>
+          {/each}
+        </p>
         <div class="content-start">
           <progress
             class="w-full max-w-[880px] h-[16px] rounded-full"
