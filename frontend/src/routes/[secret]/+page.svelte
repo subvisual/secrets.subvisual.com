@@ -25,7 +25,7 @@
   let secretText: string;
   let files = [];
   let showModal = false;
-  let selectedImage = "";
+  let selectedFile = "";
   let imageModalVisible = false;
 
   async function revealSecret() {
@@ -56,7 +56,7 @@
   }
 
   function openImageModal(image) {
-    selectedImage = image;
+    selectedFile = image;
     imageModalVisible = true;
   }
 
@@ -185,5 +185,5 @@
     </div>
   {/if}
 
-  <ImageModal bind:showModal={imageModalVisible} imageUrl={selectedImage} />
+  <ImageModal bind:showModal={imageModalVisible} imageUrl={selectedFile} />
 </div>
