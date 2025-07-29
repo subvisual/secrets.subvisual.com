@@ -101,7 +101,7 @@
           <div
             class="relative m-[5px] p-[10px] bg-white rounded border border-gray-200 flex items-center shadow-sm"
           >
-            {#if typeof file === "string" || (file.type && file.type.startsWith("image/"))}
+            {#if isImageFile(file)}
               <!-- Handle old format (string) or new image format -->
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
