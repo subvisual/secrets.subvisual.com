@@ -97,7 +97,7 @@
       let processedFile = file;
       
       // Only compress if it's an image file
-      if (file.type.startsWith('image/')) {
+      if (file.type && file.type.startsWith('image/')) {
         processedFile = await compressImage(file, { quality: 0.7 });
       }
       
