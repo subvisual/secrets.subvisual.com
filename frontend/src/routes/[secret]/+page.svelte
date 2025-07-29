@@ -8,6 +8,7 @@
     encryptData,
     generatePassphrase,
     convertFileToBase64,
+    isImageFile,
     decryptData,
     formatFileSize,
   } from "$lib/crypto";
@@ -64,7 +65,11 @@
     const link = document.createElement("a");
     if (typeof file === "string") {
       link.href = file; // Old format: file is a string
-    } else if (file && typeof file === "object" && file.hasOwnProperty("data")) {
+    } else if (
+      file &&
+      typeof file === "object" &&
+      file.hasOwnProperty("data")
+    ) {
       link.href = file.data; // New format: file is an object with a data property
     } else {
       console.error("Invalid file format:", file);
