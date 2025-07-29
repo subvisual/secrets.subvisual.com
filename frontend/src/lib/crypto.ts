@@ -100,7 +100,7 @@ export async function encryptData(
   combined.set(iv, salt.length);
   combined.set(new Uint8Array(encryptedContent), salt.length + iv.length);
 
-  return bufferToBase64(combined);
+  return bufferToBase64(combined.buffer);
 }
 
 export async function decryptData(
@@ -213,4 +213,16 @@ export async function compressImage(
 
     reader.onerror = () => reject(new Error("FileReader failed."));
   });
+}
+
+export function isImageFile(file: File): boolean {
+  return file.type.startsWith('image/');
+}
+
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }

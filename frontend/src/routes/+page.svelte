@@ -7,6 +7,8 @@
     generatePassphrase,
     convertFileToBase64,
     compressImage,
+    isImageFile,
+    formatFileSize,
   } from "$lib/crypto";
   import { createSecret } from "$lib/api";
   import { tweened } from "svelte/motion";
@@ -47,8 +49,8 @@
   let submitting: boolean = false;
   let secretText: string;
   let fileinput: HTMLInputElement;
-  let images: any[] = [];
-  let imageBase64Strings: string[] = [];
+  let files: any[] = [];
+  let fileBase64Strings: any[] = [];
 
   let encryptedText: string;
   let encryptionKey: string;
@@ -81,20 +83,31 @@
     if (input?.files) {
       for (let i = 0; i < input.files.length; i++) {
         const file = input.files[i];
-        images = [...images, file];
+        files = [...files, file];
       }
     }
   }
 
-  function removeImage(index: number) {
-    images = images.filter((_, i) => i !== index);
+  function removeFile(index: number) {
+    files = files.filter((_, i) => i !== index);
   }
 
-  async function compressAndConvertImages() {
-    for (let file of images) {
-      const compressedFile = await compressImage(file, { quality: 0.7 });
-      const base64String = await convertFileToBase64(compressedFile);
-      imageBase64Strings.push(base64String);
+  async function processAndConvertFiles() {
+    for (let file of files) {
+      let processedFile = file;
+      
+      // Only compress if it's an image file
+      if (file.type && file.type.startsWith('image/')) {
+        processedFile = await compressImage(file, { quality: 0.7 });
+      }
+      
+      const base64String = await convertFileToBase64(processedFile);
+      fileBase64Strings.push({
+        data: base64String,
+        name: file.name,
+        type: file.type,
+        size: processedFile.size
+      });
     }
   }
 
@@ -103,14 +116,14 @@
       submitting = true;
       await progress.set(0);
 
-      if (images.length > 0) {
-        await compressAndConvertImages();
+      if (files.length > 0) {
+        await processAndConvertFiles();
         await progress.set(0.4);
       }
 
       const combinedData = {
         text: secretText,
-        images: imageBase64Strings,
+        files: fileBase64Strings,
       };
       const combinedString = JSON.stringify(combinedData);
 
@@ -139,8 +152,8 @@
     goto("/");
     submitting = false;
     sharingUrl = "";
-    images = [];
-    imageBase64Strings = [];
+    files = [];
+    fileBase64Strings = [];
     secretText = "";
     expiry = 900;
     copyLabel = "Copy link!";
@@ -254,7 +267,7 @@
         <input
           type="file"
           multiple
-          accept="image/*"
+          accept="*/*"
           on:change={handleFileInput}
           style="display:none"
           bind:this={fileinput}
@@ -263,7 +276,7 @@
           class="lg sec md:h-[55px] h-[45px]"
           on:click={() => {
             fileinput.click();
-          }}>Import Image</Button
+          }}>Import Files</Button
         >
 
         <Button
@@ -273,18 +286,28 @@
         >
       </div>
       <div class="flex flex-wrap justify-center items-center mt-[10px]">
-        {#each images as image, index}
-          <div class="relative m-[5px]">
-            <img
-              class="w-[200px] h-[100px] object-cover cursor-pointer rounded"
-              src={URL.createObjectURL(image)}
-              alt="Uploaded"
-            />
+        {#each files as file, index}
+          <div class="relative m-[5px] p-[10px] bg-white rounded border border-gray-200 flex items-center">
+            {#if file.type.startsWith('image/')}
+              <img
+                class="w-[50px] h-[50px] object-cover cursor-pointer rounded mr-[10px]"
+                src={URL.createObjectURL(file)}
+                alt="Uploaded"
+              />
+            {:else}
+              <div class="w-[50px] h-[50px] bg-gray-100 rounded mr-[10px] flex items-center justify-center">
+                <span class="text-[20px]">📄</span>
+              </div>
+            {/if}
+            <div class="flex flex-col">
+              <span class="text-[14px] font-medium text-gray-800 truncate max-w-[150px]" title={file.name}>{file.name}</span>
+              <span class="text-[12px] text-gray-500">{formatFileSize(file.size)}</span>
+            </div>
             <button
-              class="absolute top-[5px] right-[5px] bg-white text-black border-none cursor-pointer text-[14px] rounded-full w-[20px] h-[20px] flex items-center justify-center"
-              on:click={() => removeImage(index)}
+              class="absolute top-[5px] right-[5px] bg-red-500 text-white border-none cursor-pointer text-[12px] rounded-full w-[18px] h-[18px] flex items-center justify-center hover:bg-red-600"
+              on:click={() => removeFile(index)}
             >
-              x
+              ×
             </button>
           </div>
         {/each}
