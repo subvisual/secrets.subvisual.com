@@ -62,7 +62,14 @@
 
   function downloadFile(file) {
     const link = document.createElement("a");
-    link.href = file.data || file; // Handle both new format and old format
+    if (typeof file === "string") {
+      link.href = file; // Old format: file is a string
+    } else if (file && typeof file === "object" && file.hasOwnProperty("data")) {
+      link.href = file.data; // New format: file is an object with a data property
+    } else {
+      console.error("Invalid file format:", file);
+      return; // Exit the function if the file format is invalid
+    }
     link.download = file.name || "downloaded-file";
     document.body.appendChild(link);
     link.click();
