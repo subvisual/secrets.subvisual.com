@@ -3,12 +3,13 @@
   import type { PageData } from "./$types";
   import Button from "../../components/Button.svelte";
   import Modal from "../../components/Modal.svelte";
-  import ImageModal from "../../components/ImageModal.svelte"; 
+  import ImageModal from "../../components/ImageModal.svelte";
   import {
     encryptData,
     generatePassphrase,
     convertFileToBase64,
     decryptData,
+    formatFileSize,
   } from "$lib/crypto";
   import { getRoomSecret } from "$lib/api";
   import { onMount } from "svelte";
@@ -16,20 +17,16 @@
   import { cubicOut } from "svelte/easing";
   import { goto } from "$app/navigation";
 
-  onMount(() => {
-        console.log(window.location.href);
-    });
   export let data: PageData;
 
   let { room, roomExists } = data;
   let revealed = false;
   let copyLabel = "Copy Information";
   let secretText: string;
-  let images = [];
+  let files = [];
   let showModal = false;
-  let selectedImage = ""; 
-  let imageModalVisible = false; 
-
+  let selectedImage = "";
+  let imageModalVisible = false;
 
   async function revealSecret() {
     try {
@@ -38,7 +35,8 @@
       let decryptedSecret = await decryptData(secret, encryptionKey);
       const parsedSecret = JSON.parse(decryptedSecret);
       secretText = parsedSecret.text;
-      images = parsedSecret.images;
+      // Handle backward compatibility
+      files = parsedSecret.files || parsedSecret.images || [];
       revealed = true;
     } catch (error) {
       goto("/error");
@@ -47,8 +45,8 @@
 
   function newSecret() {
     goto("/");
-    images = [];
-    secretText = ""; 
+    files = [];
+    secretText = "";
     copyLabel = "Copy link!";
   }
 
@@ -60,6 +58,15 @@
   function openImageModal(image) {
     selectedImage = image;
     imageModalVisible = true;
+  }
+
+  function downloadFile(file) {
+    const link = document.createElement("a");
+    link.href = file.data || file; // Handle both new format and old format
+    link.download = file.name || "downloaded-file";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 </script>
 
@@ -84,21 +91,63 @@
         <Button class="lg sec md:h-[55px] h-[45px]" on:click={() => newSecret()}
           >Create New Secret</Button
         >
-        <Button class="lg primary md:h-[55px] h-[45px]" on:click={() => copyToClipboard()}
-          >{copyLabel}</Button
+        <Button
+          class="lg primary md:h-[55px] h-[45px]"
+          on:click={() => copyToClipboard()}>{copyLabel}</Button
         >
       </div>
       <div class="flex flex-wrap justify-center items-center mt-[10px]">
-        {#each images as image, index}
-          <div class="relative m-[5px]">
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-            <img
-              class="max-w-[200px] max-h-[100px] object-cover cursor-pointer"
-              alt="Uploaded"
-              src={image}
-              on:click={() => openImageModal(image)} 
-            />
+        {#each files as file, index}
+          <div
+            class="relative m-[5px] p-[10px] bg-white rounded border border-gray-200 flex items-center shadow-sm"
+          >
+            {#if typeof file === "string" || (file.type && file.type.startsWith("image/"))}
+              <!-- Handle old format (string) or new image format -->
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+              <img
+                class="w-[50px] h-[50px] object-cover cursor-pointer rounded mr-[10px]"
+                alt="Uploaded"
+                src={file.data || file}
+                on:click={() => openImageModal(file.data || file)}
+              />
+              <div class="flex flex-col">
+                <span class="text-[14px] font-medium text-gray-800"
+                  >{file.name || "Image"}</span
+                >
+                {#if file.size}
+                  <span class="text-[12px] text-gray-500"
+                    >{formatFileSize(file.size)}</span
+                  >
+                {/if}
+              </div>
+            {:else}
+              <!-- Handle non-image files -->
+              <div
+                class="w-[50px] h-[50px] bg-gray-100 rounded mr-[10px] flex items-center justify-center cursor-pointer"
+                on:click={() => downloadFile(file)}
+                on:keydown={(e) => e.key === "Enter" && downloadFile(file)}
+                role="button"
+                tabindex="0"
+              >
+                <span class="text-[20px]">📄</span>
+              </div>
+              <div class="flex flex-col">
+                <span
+                  class="text-[14px] font-medium text-gray-800 truncate max-w-[250px]"
+                  title={file.name}>{file.name}</span
+                >
+                <span class="text-[12px] text-gray-500"
+                  >{formatFileSize(file.size)}</span
+                >
+                <button
+                  class="text-[12px] text-blue-600 hover:text-blue-800 mt-1"
+                  on:click={() => downloadFile(file)}
+                >
+                  Download
+                </button>
+              </div>
+            {/if}
           </div>
         {/each}
       </div>
@@ -121,8 +170,9 @@
       <div
         class="flex flex-wrap justify-center items-center w-full max-w-[880px] p-[30px]"
       >
-        <Button on:click={() => revealSecret()} class="lg primary md:h-[55px] h-[45px]"
-          >Reveal Secret</Button
+        <Button
+          on:click={() => revealSecret()}
+          class="lg primary md:h-[55px] h-[45px]">Reveal Secret</Button
         >
       </div>
     </div>
